@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\GameRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GameRepository::class)]
@@ -24,6 +27,23 @@ class Game
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateMatch = null;
+
+    #[ORM\ManyToOne(inversedBy: 'games')]
+    private ?Team $teamId1 = null;
+
+    #[ORM\ManyToOne(inversedBy: 'games')]
+    private ?Team $teamId2 = null;
+
+    #[ORM\OneToMany(mappedBy: 'game', targetEntity: Bet::class)]
+    private Collection $bets;
+
+    public function __construct()
+    {
+        $this->bets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +94,73 @@ class Game
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDateMatch(): ?\DateTimeInterface
+    {
+        return $this->dateMatch;
+    }
+
+    public function setDateMatch(\DateTimeInterface $dateMatch): static
+    {
+        $this->dateMatch = $dateMatch;
+
+        return $this;
+    }
+
+    public function getTeamId1(): ?Team
+    {
+        return $this->teamId1;
+    }
+
+    public function setTeamId1(?Team $teamId1): static
+    {
+        $this->teamId1 = $teamId1;
+
+        return $this;
+    }
+
+    public function getTeamId2(): ?Team
+    {
+        return $this->teamId2;
+    }
+
+    public function setTeamId2(?Team $teamId2): static
+    {
+        $this->teamId2 = $teamId2;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Bet>
+     */
+    public function getBets(): Collection
+    {
+        return $this->bets;
+    }
+
+    public function addBet(Bet $bet): static
+    {
+        if (!$this->bets->contains($bet)) {
+            $this->bets->add($bet);
+            $bet->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBet(Bet $bet): static
+    {
+        if ($this->bets->removeElement($bet)) {
+            // set the owning side to null (unless already changed)
+            if ($bet->getGame() === $this) {
+                $bet->setGame(null);
+            }
+        }
 
         return $this;
     }
