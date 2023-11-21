@@ -24,9 +24,17 @@ class League
     #[ORM\OneToMany(mappedBy: 'league', targetEntity: Bet::class)]
     private Collection $bets;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'league')]
+    private Collection $users;
+
+    #[ORM\ManyToOne(inversedBy: 'leagues')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $idUserCreator = null;
+
     public function __construct()
     {
         $this->bets = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,6 +92,45 @@ class League
                 $bet->setLeague(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addLeague($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeLeague($this);
+        }
+
+        return $this;
+    }
+
+    public function getIdUserCreator(): ?User
+    {
+        return $this->idUserCreator;
+    }
+
+    public function setIdUserCreator(?User $idUserCreator): static
+    {
+        $this->idUserCreator = $idUserCreator;
 
         return $this;
     }

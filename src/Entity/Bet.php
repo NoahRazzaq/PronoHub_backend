@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BetRepository::class)]
@@ -27,6 +29,14 @@ class Bet
 
     #[ORM\ManyToOne(inversedBy: 'bets')]
     private ?League $league = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'bet')]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +99,33 @@ class Bet
     public function setLeague(?League $league): static
     {
         $this->league = $league;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addBet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeBet($this);
+        }
 
         return $this;
     }
