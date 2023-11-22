@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
+    private ?string $lastname = null;
 
     #[ORM\ManyToMany(targetEntity: LeaderBoard::class, inversedBy: 'users')]
     private Collection $leaderBoards;
@@ -137,14 +137,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function getLastname(): ?string
     {
-        return $this->lastName;
+        return $this->lastname;
     }
 
-    public function setLastName(string $lastName): static
+    public function setLastname(string $lastname): static
     {
-        $this->lastName = $lastName;
+        $this->lastname = $lastname;
 
         return $this;
     }
