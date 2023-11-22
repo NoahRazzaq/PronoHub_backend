@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lastname = null;
+        private ?string $lastname = null;
 
     #[ORM\ManyToMany(targetEntity: LeaderBoard::class, inversedBy: 'users')]
     private Collection $leaderBoards;
