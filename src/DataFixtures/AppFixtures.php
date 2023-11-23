@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Bet;
+use App\Entity\Category;
 use App\Entity\Game;
 use App\Entity\LeaderBoard;
 use App\Entity\League;
@@ -39,6 +40,11 @@ class AppFixtures extends Fixture
                 ->setType($faker->word);
 
             $manager->persist($teams2);
+
+            $categories = new Category();
+            $categories->setName('Rugby');
+
+            $manager->persist($categories);
 
             $games = new Game();
             $games->setScore1($faker->randomDigit)

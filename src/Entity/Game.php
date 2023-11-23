@@ -25,9 +25,6 @@ class Game
     #[ORM\Column(length: 255)]
     private ?string $banner = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $type = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateMatch = null;
 
@@ -39,6 +36,9 @@ class Game
 
     #[ORM\OneToMany(mappedBy: 'game', targetEntity: Bet::class)]
     private Collection $bets;
+
+    #[ORM\ManyToOne(inversedBy: 'game')]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -161,6 +161,18 @@ class Game
                 $bet->setGame(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
