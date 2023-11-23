@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Game{% endblock %}
+
+{% block body %}
+    <h1>Game</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ game.id }}</td>
+            </tr>
+            <tr>
+                <th>Score1</th>
+                <td>{{ game.score1 }}</td>
+            </tr>
+            <tr>
+                <th>Score2</th>
+                <td>{{ game.score2 }}</td>
+            </tr>
+            <tr>
+                <th>Banner</th>
+                <td>{{ game.banner }}</td>
+            </tr>
+            <tr>
+                <th>DateMatch</th>
+                <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Bets:</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Users</th>
+                <th>Team</th>
+                <!-- Add more columns based on your Bet entity properties -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for bet in bets %}
+        
+                <tr>
+                    <td>{{ bet.id }}</td>
+                    <td>{{ bet.status }}</td>
+                    <td>
+                        
+                    </td>
+                    <td>{{ bet.getTeam().name }}</td>
+                    <!-- Add more cells based on your Bet entity properties -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_game_index') }}">back to list</a>
+
+    <a href="{{ path('app_game_edit', {'id': game.id}) }}">edit</a>
+
+    {{ include('game/_delete_form.html.twig') }}
+{% endblock %}
