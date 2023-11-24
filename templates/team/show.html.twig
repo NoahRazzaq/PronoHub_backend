@@ -26,6 +26,14 @@
         </tbody>
     </table>
 
+    {% for game in team.games %}
+            <li>{{ game.banner }} - {{ game.dateMatch|date('Y-m-d H:i') }}</li>
+            <li> Score: {{ game.score1 }} - {{ game.score2 }}</li>
+        {% endfor %}
+
+  
+
+
     <a href="{{ path('app_team_index') }}">back to list</a>
 
     <a href="{{ path('app_team_edit', {'id': team.id}) }}">edit</a>

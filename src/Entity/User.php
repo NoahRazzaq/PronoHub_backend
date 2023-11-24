@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $leaderBoards;
 
     #[ORM\ManyToMany(targetEntity: Bet::class, inversedBy: 'users')]
-    private Collection $bet;
+    private Collection $bets;
 
     #[ORM\ManyToMany(targetEntity: League::class, inversedBy: 'users')]
     private Collection $league;
@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->leaderBoards = new ArrayCollection();
-        $this->bet = new ArrayCollection();
+        $this->bets = new ArrayCollection();
         $this->league = new ArrayCollection();
         $this->leagues = new ArrayCollection();
     }
@@ -176,15 +176,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Bet>
      */
-    public function getBet(): Collection
+    public function getBets(): Collection
     {
-        return $this->bet;
+        return $this->bets;
     }
 
     public function addBet(Bet $bet): static
     {
-        if (!$this->bet->contains($bet)) {
-            $this->bet->add($bet);
+        if (!$this->bets->contains($bet)) {
+            $this->bets->add($bet);
         }
 
         return $this;
@@ -192,7 +192,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeBet(Bet $bet): static
     {
-        $this->bet->removeElement($bet);
+        $this->bets->removeElement($bet);
 
         return $this;
     }

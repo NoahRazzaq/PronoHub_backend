@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User: {{ user.name }} {{ user.lastname }}{% endblock %}
+
+{% block body %}
+    <h1>User: {{ user.name }} {{ user.lastname }}</h1>
+
+    <h2>Bets:</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Game</th>
+                <th>Team bet</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bet in bets %}
+            <tr>
+                <td>{{ bet.id }}</td>
+                <td>{{ bet.status }}</td>
+                <td>
+                    {{ bet.game.teamId1.name }} vs {{ bet.game.teamId2.name }}<br>
+                    Date: {{ bet.game.dateMatch|date('Y-m-d H:i') }}<br>
+                    Score: {{ bet.game.score1 }} - {{ bet.game.score2 }}
+                </td>
+                <td>{{ bet.team.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_index') }}">Back to user list</a>
+    <a href="{{ path('app_user_edit', {'id': user.id}) }}">Edit</a>
+    {{ include('user/_delete_form.html.twig', {'id': user.id}) }}
+{% endblock %}

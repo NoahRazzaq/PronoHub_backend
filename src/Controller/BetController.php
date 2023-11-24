@@ -45,6 +45,7 @@ class BetController extends AbstractController
     #[Route('/{id}', name: 'app_bet_show', methods: ['GET'])]
     public function show(Bet $bet): Response
     {
+        dd($bet->getUsers()->getValues());
         return $this->render('bet/show.html.twig', [
             'bet' => $bet,
         ]);
