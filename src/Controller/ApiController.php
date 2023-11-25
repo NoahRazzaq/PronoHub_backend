@@ -10,14 +10,19 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 class ApiController extends AbstractController
 {
     private $entityManager;
+    private $translator;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
         $this->entityManager = $entityManager;
+                $this->translator = $translator;
+
     }
 
     #[Route('/dashboard/createTeam', name: 'app_api_team')]
@@ -32,7 +37,8 @@ class ApiController extends AbstractController
         $data = $response->toArray();
 
         foreach ($data['teams'] as $teamData) {
-            $categoryName = $teamData['strSport'];
+            $categoryName = $this->translateSport($teamData['strSport']);
+
             $category = $this->getOrCreateCategory($categoryName);
 
             $this->createTeam($teamData['strTeam'], $teamData['strTeamBadge'], $category);
@@ -53,6 +59,12 @@ class ApiController extends AbstractController
             $this->entityManager->flush();
         }
     }
+
+    
+public function translateSport($sport)
+{
+    return $this->translator->trans("$sport", [], 'messages');
+}
 
     #[Route('/dashboard/app', name: 'app_api_app')]
     public function fetchAndStoreEvents()
