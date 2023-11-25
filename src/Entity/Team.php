@@ -21,14 +21,16 @@ class Team
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type = null;
+
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: Bet::class)]
     private Collection $bets;
 
     #[ORM\OneToMany(mappedBy: 'teamId1', targetEntity: Game::class)]
     private Collection $games;
+
+    #[ORM\ManyToOne(inversedBy: 'teams')]
+    private ?Category $category = null;
 
 
     public function __construct()
@@ -66,17 +68,6 @@ class Team
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Bet>
@@ -134,6 +125,18 @@ class Team
                 $game->setTeamId1(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

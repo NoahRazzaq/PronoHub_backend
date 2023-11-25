@@ -40,9 +40,13 @@ class Game
     #[ORM\ManyToOne(inversedBy: 'game')]
     private ?Category $category = null;
 
+    #[ORM\Column]
+    private ?bool $isFinished = null;
+
     public function __construct()
     {
         $this->bets = new ArrayCollection();
+        $this->isFinished = false;
     }
 
     public function getId(): ?int
@@ -82,18 +86,6 @@ class Game
     public function setBanner(string $banner): static
     {
         $this->banner = $banner;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -173,6 +165,18 @@ class Game
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function isIsFinished(): ?bool
+    {
+        return $this->isFinished;
+    }
+
+    public function setIsFinished(bool $isFinished): static
+    {
+        $this->isFinished = $isFinished;
 
         return $this;
     }
