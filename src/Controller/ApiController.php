@@ -21,8 +21,7 @@ class ApiController extends AbstractController
     public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
         $this->entityManager = $entityManager;
-                $this->translator = $translator;
-
+        $this->translator = $translator;
     }
 
     #[Route('/dashboard/createTeam', name: 'app_api_team')]
@@ -37,11 +36,7 @@ class ApiController extends AbstractController
         $data = $response->toArray();
 
         foreach ($data['teams'] as $teamData) {
-            $categoryName = $this->translateSport($teamData['strSport']);
-
-            $category = $this->getOrCreateCategory($categoryName);
-
-            $this->createTeam($teamData['strTeam'], $teamData['strTeamBadge'], $category);
+            $this->createTeam($teamData['strTeam'], $teamData['strTeamBadge']);
         }
 
         return new Response('Teams created successfully!');
@@ -54,17 +49,17 @@ class ApiController extends AbstractController
         if (!$team) {
             $team = new Team();
             $team->setName($teamName);
-            $team->setLogo($logo); 
+            $team->setLogo($logo);
             $this->entityManager->persist($team);
             $this->entityManager->flush();
         }
     }
 
-    
-public function translateSport($sport)
-{
-    return $this->translator->trans("$sport", [], 'messages');
-}
+
+    public function translateSport($sport)
+    {
+        return $this->translator->trans("$sport", [], 'messages');
+    }
 
     #[Route('/dashboard/app', name: 'app_api_app')]
     public function fetchAndStoreEvents()
@@ -85,7 +80,7 @@ public function translateSport($sport)
         $data = $response->toArray();
 
         foreach ($data['events'] as $event) {
-            $categoryName = $event['strSport'];
+            $categoryName = $this->translateSport($event['strSport']);
             $category = $this->getOrCreateCategory($categoryName);
 
             $team1 = $this->getOrCreateTeam($event['strHomeTeam'], $category);
@@ -108,12 +103,12 @@ public function translateSport($sport)
         }
 
         $this->entityManager->flush();
-        
+
         return new Response('Games created successfully!');
-        
     }
 
-  
+
+
 
     private function getOrCreateCategory($categoryName)
     {
@@ -145,6 +140,4 @@ public function translateSport($sport)
 
         return $team;
     }
-
-  
 }
