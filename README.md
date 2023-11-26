@@ -36,33 +36,22 @@ Assurez-vous d'avoir installé PHP, Composer et Symfony CLI avant de poursuivre.
 
     Suivez les instructions pour définir le nom d'utilisateur, le mot de passe, etc.
 
-## Création des équipes
-
-1. Aller sur l'url 
-```bash
-    /dashboard/createTeam
- ```
-
 ## Création des matches
 
-1. Aller sur l'url 
-```bash
-    /dashboard/app
- ```
-2. Pouvez changer le round du championnat afin d'obtenir les matchs déroulés et les prohains matchs
-  Dans ApiController.php
-```bash
-    #[Route('/dashboard/app', name: 'app_api_app')]
-    public function fetchAndStoreEvents()
-    {
-        $leagueId = '4328';
+1. Se rendre sur l'url
+ ```bash
+dashboard/game/new
+```
 
-        $currentYear = date('Y');
-        $nextYear = $currentYear + 1;
+2. Renseigner l'id d'une ligue et le round
+ ```bash
+exemple:
+// nom de la league : ID
+Ligue 1 : 4334
+Première league : 4328
+top 14 : 4430
+```
 
-        $seasonYear = $currentYear . '-' . $nextYear;
 
-        $round = 10;
 
-        $apiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/eventsround.php?id={$leagueId}&r={$round}&s={$seasonYear}";
- ```
+
