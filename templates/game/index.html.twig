@@ -26,7 +26,6 @@
                 <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('app_game_show', {'id': game.id}) }}">show</a>
-                    <a href="{{ path('app_game_edit', {'id': game.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
