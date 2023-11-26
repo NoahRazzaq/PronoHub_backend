@@ -108,7 +108,9 @@ public function translateSport($sport)
         }
 
         $this->entityManager->flush();
-        return $data;
+        
+        return new Response('Games created successfully!');
+        
     }
 
   
