@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 
 #[Route('/dashboard/game')]
 class GameController extends AbstractController
@@ -36,18 +38,22 @@ class GameController extends AbstractController
     #[Route('/new', name: 'app_game_new', methods: ['GET', 'POST'])]
     public function new(Request $request)
     {
-        $form = $this->createForm(TeamGameFormType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $event = new CreateMatchesEvent($data['leagueId'], $data['round']);
-            $this->dispatcher->dispatch($event);
-
-            $this->addFlash('success', 'Matches created successfully!');
-
-            return $this->redirectToRoute('app_game_index');
+        try {
+            $form = $this->createForm(TeamGameFormType::class);
+            $form->handleRequest($request);
+    
+            if ($form->isSubmitted() && $form->isValid()) {
+                $data = $form->getData();
+    
+                $event = new CreateMatchesEvent($data['leagueId'], $data['round']);
+                $this->dispatcher->dispatch($event);
+    
+                $this->addFlash('success', 'Matches created successfully!');
+    
+                return $this->redirectToRoute('app_game_index');
+            }
+        } catch (HttpException $exception) {
+            return new Response($exception->getMessage(), $exception->getStatusCode());
         }
 
         return $this->render('game/new.html.twig', [

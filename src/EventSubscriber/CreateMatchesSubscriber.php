@@ -1,4 +1,5 @@
 <?php
+
 namespace App\EventSubscriber;
 
 use App\Entity\Category;
@@ -9,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CreateMatchesSubscriber implements EventSubscriberInterface
@@ -44,7 +46,15 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
         $response = $httpClient->request('GET', $apiEndpoint);
         $data = $response->toArray();
 
-        $teamApiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=English%20Premier%20League";
+        if ($this->isRoundGenerated($round)) {
+            throw new HttpException(Response::HTTP_CONFLICT, 'Round already generated!');
+        }   
+
+        foreach ($data['events'] as $event) {
+            $leagueName = $this->formatLeagueName($event['strLeague']);
+        }
+
+        $teamApiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l={$leagueName}";
         $teamResponse = $httpClient->request('GET', $teamApiEndpoint);
         $teamData = $teamResponse->toArray();
 
@@ -71,6 +81,7 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
             $game->setTeamId2($team2);
             $game->setCategory($category);
             $game->setIsFinished($event['strStatus'] === 'Match Finished');
+            $game->setRound($round);
 
             $this->entityManager->persist($game);
         }
@@ -79,6 +90,17 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
 
         return new Response('Games created successfully!');
     }
+    private function formatLeagueName($leagueName)
+    {
+        return str_replace(' ', '_', $leagueName);
+    }
+
+    public function isRoundGenerated($round)
+{
+    $gameRepository = $this->entityManager->getRepository(Game::class);
+
+    return $gameRepository->findOneBy(['round' => $round]) !== null;
+}
 
     private function translateSport($sport)
     {
@@ -124,7 +146,7 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
         if (!$team) {
             $team = new Team();
             $team->setName($teamName);
-            $team->setLogo($logo); 
+            $team->setLogo($logo);
             $this->entityManager->persist($team);
             $this->entityManager->flush();
         }

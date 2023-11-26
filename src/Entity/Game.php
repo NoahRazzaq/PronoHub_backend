@@ -43,6 +43,9 @@ class Game
     #[ORM\Column]
     private ?bool $isFinished = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $round = null;
+
     public function __construct()
     {
         $this->bets = new ArrayCollection();
@@ -177,6 +180,18 @@ class Game
     public function setIsFinished(bool $isFinished): static
     {
         $this->isFinished = $isFinished;
+
+        return $this;
+    }
+
+    public function getRound(): ?int
+    {
+        return $this->round;
+    }
+
+    public function setRound(?int $round): static
+    {
+        $this->round = $round;
 
         return $this;
     }
