@@ -21,9 +21,15 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Game::class)]
     private Collection $games;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Team::class)]
+    private Collection $teams;
+
+
+
     public function __construct()
     {
         $this->games = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,6 +73,36 @@ class Category
             // set the owning side to null (unless already changed)
             if ($game->getCategory() === $this) {
                 $game->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): static
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): static
+    {
+        if ($this->teams->removeElement($team)) {
+            // set the owning side to null (unless already changed)
+            if ($team->getCategory() === $this) {
+                $team->setCategory(null);
             }
         }
 
