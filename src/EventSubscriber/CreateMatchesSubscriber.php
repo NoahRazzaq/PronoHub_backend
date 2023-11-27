@@ -46,9 +46,7 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
         $response = $httpClient->request('GET', $apiEndpoint);
         $data = $response->toArray();
 
-        if ($this->isRoundGenerated($round)) {
-            throw new HttpException(Response::HTTP_CONFLICT, 'Round already generated!');
-        }   
+
 
         foreach ($data['events'] as $event) {
             $leagueName = $this->formatLeagueName($event['strLeague']);
@@ -95,12 +93,6 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
         return str_replace(' ', '_', $leagueName);
     }
 
-    public function isRoundGenerated($round)
-{
-    $gameRepository = $this->entityManager->getRepository(Game::class);
-
-    return $gameRepository->findOneBy(['round' => $round]) !== null;
-}
 
     private function translateSport($sport)
     {

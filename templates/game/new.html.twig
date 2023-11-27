@@ -6,6 +6,8 @@
     <h1>Create Matches</h1>
 
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.leagueId) }}
+    {{ form_row(form.round) }}
+    {{ form_row(form.submit) }}
     {{ form_end(form) }}
 {% endblock %}

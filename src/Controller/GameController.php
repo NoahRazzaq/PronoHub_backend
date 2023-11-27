@@ -8,6 +8,7 @@ use App\Form\CreateMatchesType;
 use App\Form\Game1Type;
 use App\Form\TeamGameFormType;
 use App\Repository\GameRepository;
+use App\Repository\LeagueApiRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,15 +37,16 @@ class GameController extends AbstractController
     }
 
     #[Route('/new', name: 'app_game_new', methods: ['GET', 'POST'])]
-    public function new(Request $request)
+    public function new(Request $request, LeagueApiRepository $leagueApiRepository)
     {
         try {
+     
             $form = $this->createForm(TeamGameFormType::class);
             $form->handleRequest($request);
     
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
-    
+                
                 $event = new CreateMatchesEvent($data['leagueId'], $data['round']);
                 $this->dispatcher->dispatch($event);
     

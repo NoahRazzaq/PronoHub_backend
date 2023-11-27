@@ -46,6 +46,9 @@ class Game
     #[ORM\Column(nullable: true)]
     private ?int $round = null;
 
+    #[ORM\ManyToOne(inversedBy: 'games')]
+    private ?LeagueApi $leagueApi = null;
+
     public function __construct()
     {
         $this->bets = new ArrayCollection();
@@ -192,6 +195,18 @@ class Game
     public function setRound(?int $round): static
     {
         $this->round = $round;
+
+        return $this;
+    }
+
+    public function getLeagueApi(): ?LeagueApi
+    {
+        return $this->leagueApi;
+    }
+
+    public function setLeagueApi(?LeagueApi $leagueApi): static
+    {
+        $this->leagueApi = $leagueApi;
 
         return $this;
     }
