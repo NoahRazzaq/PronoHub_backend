@@ -27,7 +27,6 @@ class ApiController extends AbstractController
     #[Route('/dashboard/createTeam', name: 'app_api_team')]
     public function createTeams()
     {
-        $leagueId = '4328';
 
         $apiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=English%20Premier%20League";
         $httpClient = HttpClient::create();

@@ -8,11 +8,13 @@ class CreateMatchesEvent extends Event
 {
     private $leagueId;
     private $round;
+    private $seasonYear;
 
-    public function __construct(string $leagueId, int $round)
+    public function __construct( $leagueId,  $round, $seasonYear)
     {
         $this->leagueId = $leagueId;
         $this->round = $round;
+        $this->seasonYear = $seasonYear;
     }
 
     public function getLeagueId(): string
@@ -23,5 +25,10 @@ class CreateMatchesEvent extends Event
     public function getRound(): int
     {
         return $this->round;
+    }
+
+    public function getSeasonYear(): string
+    {
+        return $this->seasonYear;
     }
 }
