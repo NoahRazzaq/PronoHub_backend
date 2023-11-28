@@ -36,14 +36,28 @@ class AddLeagueApiCommand extends Command
             ['name' => 'Ligue 1', 'id' => 4334],
             ['name' => 'Premier League', 'id' => 4328],
             ['name' => 'Top 14', 'id' => 4430],
+            ['name' => 'Ligue des champions', 'id' => 4480],
+            ['name' => 'NFL', 'id' => 4391],
+            ['name' => 'ATP Tour', 'id' => 4464]
         ];
 
+       
         foreach ($leagues as $league) {
-            $leagueApi = new LeagueApi();
-            $leagueApi->setName($league['name']);
-            $leagueApi->setIdentifier((string)$league['id']);
-
-            $this->entityManager->persist($leagueApi);
+            try {
+                $existLeague = $this->entityManager->getRepository(LeagueApi::class)->findOneBy(['identifier' => $league['id']]);
+        
+                if (!$existLeague) {
+                    $leagueApi = new LeagueApi();
+                    $leagueApi->setName($league['name']);
+                    $leagueApi->setIdentifier((string)$league['id']);
+        
+                    $this->entityManager->persist($leagueApi);
+                } else {
+                    $output->writeln("League '{$league['name']}' already exists. Skipping.");
+                }
+            } catch (\Exception $e) {
+                $output->writeln("An error occurred: " . $e->getMessage());
+            }
         }
 
         $this->entityManager->flush();
@@ -53,3 +67,4 @@ class AddLeagueApiCommand extends Command
         return Command::SUCCESS;
     }
 }
+

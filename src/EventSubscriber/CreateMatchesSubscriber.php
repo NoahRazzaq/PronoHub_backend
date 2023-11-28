@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\Category;
 use App\Entity\Game;
+use App\Entity\LeagueApi;
 use App\Entity\Team;
 use App\Event\CreateMatchesEvent;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function PHPUnit\Framework\throwException;
 
 class CreateMatchesSubscriber implements EventSubscriberInterface
 {
@@ -35,11 +38,12 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
     {
         $leagueId = $event->getLeagueId();
         $round = $event->getRound();
+        $seasonYear = $event->getSeasonYear();
 
-        $currentYear = date('Y');
-        $nextYear = $currentYear + 1;
+        // $currentYear = date('Y');
+        // $nextYear = $currentYear + 1;
 
-        $seasonYear = $currentYear . '-' . $nextYear;
+        // $seasonYear = $currentYear . '-' . $nextYear;
 
         $apiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/eventsround.php?id={$leagueId}&r={$round}&s={$seasonYear}";
         $httpClient = HttpClient::create();
@@ -70,6 +74,14 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
             $dateTimeString = $event['dateEvent'] . ' ' . $event['strTime'];
             $dateMatch = new \DateTime($dateTimeString);
 
+            $leagueApi = $this->entityManager->getRepository(LeagueApi::class)->findOneBy(['identifier' => $leagueId]);
+
+        $existingGame = $this->entityManager->getRepository(Game::class)->findOneBy([
+            'round' => $round,
+            'leagueApi' => $leagueApi,
+        ]);
+
+        if (!$existingGame) {
             $game = new Game();
             $game->setScore1($event['intHomeScore']);
             $game->setScore2($event['intAwayScore']);
@@ -80,6 +92,12 @@ class CreateMatchesSubscriber implements EventSubscriberInterface
             $game->setCategory($category);
             $game->setIsFinished($event['strStatus'] === 'Match Finished');
             $game->setRound($round);
+            $game->setLeagueApi($leagueApi);
+
+            $this->entityManager->persist($game);
+        } else {
+            throw new HttpException(Response::HTTP_CONFLICT, 'Games already exist');
+        }
 
             $this->entityManager->persist($game);
         }

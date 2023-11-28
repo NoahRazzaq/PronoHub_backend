@@ -47,7 +47,7 @@ class GameController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
                 
-                $event = new CreateMatchesEvent($data['leagueId'], $data['round']);
+                $event = new CreateMatchesEvent($data['leagueId'], $data['round'], $data['seasonYear']);
                 $this->dispatcher->dispatch($event);
     
                 $this->addFlash('success', 'Matches created successfully!');

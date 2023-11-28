@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class TeamGameFormType extends AbstractType
 {
@@ -25,6 +26,11 @@ class TeamGameFormType extends AbstractType
         ->add('round', IntegerType::class, [
             'label' => 'Round',
         ])
+        ->add('seasonYear', ChoiceType::class, [
+            'label' => 'Season Year',
+            'choices' => $this->getYearChoices(),
+            'required' => true,
+        ])
         ->add('submit', SubmitType::class, [
             'label' => 'Create Matches',
         ]);
@@ -35,5 +41,18 @@ class TeamGameFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => null,
         ]);
+    }
+
+    
+    private function getYearChoices(): array
+    {
+        $currentYear = (int) date('Y');
+        $nextYear = $currentYear + 1;
+
+        return [
+            $currentYear => $currentYear,
+            "{$currentYear}-{$nextYear}" => "{$currentYear}-{$nextYear}",
+            $nextYear => $nextYear,
+        ];
     }
 }
