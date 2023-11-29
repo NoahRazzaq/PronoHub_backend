@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ league_api.name }} - Rounds
+{% endblock %}
+
+{% block body %}
+    <h1>{{ league_api.name }} - Rounds</h1>
+
+    <ul>
+        {% for round in rounds %}
+             
+      
+            <li>
+                <a href="{{ path('app_league_api_games_by_round', {'id': league_api.id, 'roundId': round}) }}">
+                    Round {{ round }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_league_api_index') }}">Back to list</a>
+{% endblock %}
