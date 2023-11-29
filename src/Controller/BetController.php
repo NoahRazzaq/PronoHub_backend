@@ -22,26 +22,6 @@ class BetController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_bet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $bet = new Bet();
-        $form = $this->createForm(BetType::class, $bet);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($bet);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_bet_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('bet/new.html.twig', [
-            'bet' => $bet,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{id}', name: 'app_bet_show', methods: ['GET'])]
     public function show(Bet $bet): Response
     {
@@ -51,23 +31,6 @@ class BetController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_bet_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Bet $bet, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(BetType::class, $bet);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_bet_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('bet/edit.html.twig', [
-            'bet' => $bet,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_bet_delete', methods: ['POST'])]
     public function delete(Request $request, Bet $bet, EntityManagerInterface $entityManager): Response
