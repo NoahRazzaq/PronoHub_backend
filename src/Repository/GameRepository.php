@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Game;
+use App\Entity\LeagueApi;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,32 @@ class GameRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Game::class);
+    }
+
+    public function findRoundsByLeague(LeagueApi $leagueApi): array
+{
+    $rounds = $this->createQueryBuilder('g')
+        ->select('DISTINCT g.round')
+        ->where('g.leagueApi = :league')
+        ->setParameter('league', $leagueApi)
+        ->getQuery()
+        ->getArrayResult();
+
+    $roundValues = array_column($rounds, 'round');
+
+    return $roundValues;
+}
+
+    public function findGamesByLeagueAndRound(int $leagueId, int $roundId)
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.leagueApi', 'l')
+            ->where('l.id = :leagueId')
+            ->andWhere('g.round = :roundId')
+            ->setParameter('leagueId', $leagueId)
+            ->setParameter('roundId', $roundId)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

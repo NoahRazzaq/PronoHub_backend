@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Game index{% endblock %}
+
+{% block body %}
+    <h1>Game index</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Score1</th>
+                    <th>Score2</th>
+                    <th>Banner</th>
+                    <th>DateMatch</th>
+                    <th>Actions</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in games %}
+                    <tr>
+                        <td>{{ game.id }}</td>
+                        <td>{{ game.score1 }}</td>
+                        <td>{{ game.score2 }}</td>
+                        <td><img src="{{ game.banner }}"> </td>
+                        <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>
+                            <a href="{{ path('app_game_show', {'id': game.id}) }}">show</a>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="selected_games[]" value="{{ game.id }}">
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>no records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+    <a href="{{ path('app_game_new') }}">Create new</a>
+{% endblock %}

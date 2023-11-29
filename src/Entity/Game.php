@@ -25,9 +25,6 @@ class Game
     #[ORM\Column(length: 255)]
     private ?string $banner = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $type = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateMatch = null;
 
@@ -40,9 +37,22 @@ class Game
     #[ORM\OneToMany(mappedBy: 'game', targetEntity: Bet::class)]
     private Collection $bets;
 
+    #[ORM\ManyToOne(inversedBy: 'game')]
+    private ?Category $category = null;
+
+    #[ORM\Column]
+    private ?bool $isFinished = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $round = null;
+
+    #[ORM\ManyToOne(inversedBy: 'games')]
+    private ?LeagueApi $leagueApi = null;
+
     public function __construct()
     {
         $this->bets = new ArrayCollection();
+        $this->isFinished = false;
     }
 
     public function getId(): ?int
@@ -82,18 +92,6 @@ class Game
     public function setBanner(string $banner): static
     {
         $this->banner = $banner;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -161,6 +159,54 @@ class Game
                 $bet->setGame(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function isIsFinished(): ?bool
+    {
+        return $this->isFinished;
+    }
+
+    public function setIsFinished(bool $isFinished): static
+    {
+        $this->isFinished = $isFinished;
+
+        return $this;
+    }
+
+    public function getRound(): ?int
+    {
+        return $this->round;
+    }
+
+    public function setRound(?int $round): static
+    {
+        $this->round = $round;
+
+        return $this;
+    }
+
+    public function getLeagueApi(): ?LeagueApi
+    {
+        return $this->leagueApi;
+    }
+
+    public function setLeagueApi(?LeagueApi $leagueApi): static
+    {
+        $this->leagueApi = $leagueApi;
 
         return $this;
     }

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LeagueApi index{% endblock %}
+
+{% block body %}
+    <h1>LeagueApi index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Identifier</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for league_api in league_apis %}
+            <tr>
+                <td>{{ league_api.id }}</td>
+                <td>{{ league_api.name }}</td>
+                <td>{{ league_api.identifier }}</td>
+                <td>
+                    <a href="{{ path('app_league_api_show', {'id': league_api.id}) }}">show</a>
+                    <a href="{{ path('app_league_api_edit', {'id': league_api.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_league_api_new') }}">Create new</a>
+{% endblock %}
