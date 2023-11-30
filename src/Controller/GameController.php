@@ -7,6 +7,7 @@ use App\Event\CreateMatchesEvent;
 use App\Form\CreateMatchesType;
 use App\Form\Game1Type;
 use App\Form\TeamGameFormType;
+use App\Repository\BetRepository;
 use App\Repository\GameRepository;
 use App\Repository\LeagueApiRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -77,6 +78,28 @@ class GameController extends AbstractController
             'bets' => $bets,
         ]);
     }
+
+    #[Route('/{id}/update-bet-status/{betId}/{status}', name: 'app_game_update_bet_status', methods: ['GET'])]
+public function updateBetStatus(Request $request, Game $game, int $betId, string $status, EntityManagerInterface $manager, BetRepository $betRepository): Response
+{
+    $validStatuses = ['valid', 'pending', 'finished'];
+
+    if (!in_array($status, $validStatuses)) {
+        throw $this->createNotFoundException('invalide.');
+    }
+
+    $bet = $betRepository->find($betId);
+
+    if (!$bet || $bet->getGame() !== $game) {
+        throw $this->createNotFoundException('paris non trouver');
+    }
+
+    $bet->setStatus($status);
+    $manager->flush();
+
+    return $this->redirectToRoute('app_game_show', ['id' => $game->getId()]);
+}
+
 
 
 
