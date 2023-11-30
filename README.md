@@ -36,9 +36,9 @@ Assurez-vous d'avoir installé PHP, Composer et Symfony CLI avant de poursuivre.
 
     Suivez les instructions pour définir le nom d'utilisateur, le mot de passe, etc.
 
-## Création des ligues
+## Création des championnats
 
-1. Utilisez la commande pour créer des championnat :
+1. Utilisez la commande pour créer des championnats :
 
     ```bash
     php bin/console app:add-league-api
