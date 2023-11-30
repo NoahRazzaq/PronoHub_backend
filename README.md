@@ -111,7 +111,7 @@ Accédez à la page d'administration des paris sportifs.
     ```
    Remplacez `{game_id}` par l'id du match.
 
-2. Sur cette page, vous pourrez visualiser tous les paris associés à ce jeu.
+2. Sur cette page, vous pourrez visualiser tous les paris effectués pour ce match. Utilisez les actions disponibles pour mettre à jour le statut des paris, permettant à l'administrateur de valider ou non chaque pari.
 
 3. exemple : 
 
