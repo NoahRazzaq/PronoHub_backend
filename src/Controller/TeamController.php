@@ -32,23 +32,6 @@ class TeamController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_team_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Team $team, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(TeamType::class, $team);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_team_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('team/edit.html.twig', [
-            'team' => $team,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_team_delete', methods: ['POST'])]
     public function delete(Request $request, Team $team, EntityManagerInterface $entityManager): Response

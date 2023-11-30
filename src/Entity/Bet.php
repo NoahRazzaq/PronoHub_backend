@@ -30,7 +30,7 @@ class Bet
     #[ORM\ManyToOne(inversedBy: 'bets')]
     private ?League $league = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'bet')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'bets')]
     private Collection $users;
 
     public function __construct()

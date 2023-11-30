@@ -5,41 +5,41 @@
 {% block body %}
     <h1>Game index</h1>
 
-        <table class="table">
-            <thead>
+    <table class="table" id="gameTable">
+        <thead class="thead-light">
+            <tr>
+                <th data-column="id">ID</th>
+                <th data-column="score1">Score1</th>
+                <th data-column="score2">Score2</th>
+                <th data-column="banner">Banner</th>
+                <th data-column="dateMatch">DateMatch</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in games %}
                 <tr>
-                    <th>Id</th>
-                    <th>Score1</th>
-                    <th>Score2</th>
-                    <th>Banner</th>
-                    <th>DateMatch</th>
-                    <th>Actions</th>
-                    <th>Select</th>
+                    <td>{{ game.id }}</td>
+                    <td>{{ game.score1 }}</td>
+                    <td>{{ game.score2 }}</td>
+                    <td>
+                        <img src="{{ game.banner }}" alt="Banner" style="max-width: 100px;">
+                    </td>
+                    <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>
+                        <a href="{{ path('app_game_show', {'id': game.id}) }}" class="btn btn-primary btn-sm">Show</a>
+                    </td>
+                    
                 </tr>
-            </thead>
-            <tbody>
-                {% for game in games %}
-                    <tr>
-                        <td>{{ game.id }}</td>
-                        <td>{{ game.score1 }}</td>
-                        <td>{{ game.score2 }}</td>
-                        <td><img src="{{ game.banner }}"> </td>
-                        <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
-                        <td>
-                            <a href="{{ path('app_game_show', {'id': game.id}) }}">show</a>
-                        </td>
-                        <td>
-                            <input type="checkbox" name="selected_games[]" value="{{ game.id }}">
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td>no records found</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% else %}
+                <tr>
+                    <td colspan="7">No records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
+    <a href="{{ path('app_game_new') }}" class="btn btn-success">Create new</a>
 
-    <a href="{{ path('app_game_new') }}">Create new</a>
+  
 {% endblock %}
