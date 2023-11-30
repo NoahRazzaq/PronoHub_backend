@@ -22,7 +22,6 @@
                 <td>{{ league_api.identifier }}</td>
                 <td>
                     <a href="{{ path('app_league_api_show', {'id': league_api.id}) }}">show</a>
-                    <a href="{{ path('app_league_api_edit', {'id': league_api.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +32,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_league_api_new') }}">Create new</a>
 {% endblock %}

@@ -28,6 +28,7 @@ class GameRepository extends ServiceEntityRepository
         ->select('DISTINCT g.round')
         ->where('g.leagueApi = :league')
         ->setParameter('league', $leagueApi)
+        ->orderBy('g.round', 'ASC') 
         ->getQuery()
         ->getArrayResult();
 
@@ -47,6 +48,17 @@ class GameRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findUpcomingMatches(): array
+{
+    return $this->createQueryBuilder('g')
+        ->where('g.dateMatch > :now')
+        ->setParameter('now', new \DateTime())
+        ->orderBy('g.dateMatch', 'ASC') // Assurez-vous que les matchs sont triés par ordre croissant de date
+        ->setMaxResults(3) // Limitez à 3 résultats
+        ->getQuery()
+        ->getResult();
+}
 
 //    /**
 //     * @return Game[] Returns an array of Game objects
