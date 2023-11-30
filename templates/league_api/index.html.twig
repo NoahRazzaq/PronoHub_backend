@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}LeagueApi index{% endblock %}
+{% block title %}Index des championnats{% endblock %}
 
 {% block body %}
-    <h1>LeagueApi index</h1>
+    <h1>Liste des championnats</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
-                <th>Identifier</th>
-                <th>actions</th>
+                <th>Nom</th>
+                <th>Identifiant</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,12 +21,12 @@
                 <td>{{ league_api.name }}</td>
                 <td>{{ league_api.identifier }}</td>
                 <td>
-                    <a href="{{ path('app_league_api_show', {'id': league_api.id}) }}">show</a>
+                    <a href="{{ path('app_league_api_show', {'id': league_api.id}) }}">Voir</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucun enregistrement trouvé</td>
             </tr>
         {% endfor %}
         </tbody>

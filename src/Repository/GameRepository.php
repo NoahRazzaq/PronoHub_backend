@@ -54,8 +54,8 @@ class GameRepository extends ServiceEntityRepository
     return $this->createQueryBuilder('g')
         ->where('g.dateMatch > :now')
         ->setParameter('now', new \DateTime())
-        ->orderBy('g.dateMatch', 'ASC') // Assurez-vous que les matchs sont triés par ordre croissant de date
-        ->setMaxResults(3) // Limitez à 3 résultats
+        ->orderBy('g.dateMatch', 'ASC') 
+        ->setMaxResults(3) 
         ->getQuery()
         ->getResult();
 }

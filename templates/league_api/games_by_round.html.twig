@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ league_api.name }} - Round {{ roundId }} Games
+    {{ league_api.name }} - Matchs de la Journée {{ roundId }}
 {% endblock %}
 
 {% block body %}
     <div class="container mt-5">
-        <h1>{{ league_api.name }} - Round {{ roundId }} Games</h1>
+        <h1>{{ league_api.name }} - Matchs de la Journée {{ roundId }}</h1>
 
         {% if games is not empty %}
             <table class="table table-striped">
@@ -15,8 +15,9 @@
                         <th>ID</th>
                         <th>Score1</th>
                         <th>Score2</th>
-                        <th>Banner</th>
-                        <th>DateMatch</th>
+                        <th>Bannière</th>
+                        <th>Date du match</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,24 +26,27 @@
                             <td>{{ game.id }}</td>
                             <td>{{ game.score1 }}</td>
                             <td>{{ game.score2 }}</td>
-                            <td><img src="{{ game.banner }}" alt="Banner" style="max-width: 100px;"></td>
+                            <td><img src="{{ game.banner }}" alt="Bannière" style="max-width: 100px;"></td>
                             <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>
+                                <a href="{{ path('app_game_show', {'id': game.id}) }}" class="btn btn-outline-success">Voir détails</a>
+                            </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="5">No records found</td>
+                            <td colspan="6">Aucun enregistrement trouvé</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
 
             {% if games[0].isFinished is not defined or games[0].isFinished == false %}
-                <a href="{{ path('app_league_api_update_scores', {'leagueId': league_api.id, 'roundId': roundId}) }}" class="btn btn-warning">Update Scores</a>
+                <a href="{{ path('app_league_api_update_scores', {'leagueId': league_api.id, 'roundId': roundId}) }}" class="btn btn-warning">Mettre à jour les scores</a>
             {% endif %}
         {% else %}
-            <p>No games available for this round.</p>
+            <p>Aucun match disponible pour cette journée.</p>
         {% endif %}
 
-        <a href="{{ path('app_league_api_index') }}" class="btn btn-primary">Back to List</a>
+        <a href="{{ path('app_league_api_index') }}" class="btn btn-primary">Retour à la liste</a>
     </div>
 {% endblock %}
