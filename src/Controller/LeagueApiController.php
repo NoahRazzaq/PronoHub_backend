@@ -88,7 +88,7 @@ public function updateScores(
 
     $manager->flush();
 
-    return $this->redirectToRoute('app_home');
+    return $this->redirectToRoute('app_game_index');
 }
 
     public function findMatchingEvent(Game $game, array $events): ?array

@@ -3,7 +3,7 @@
 {% block title %}Game index{% endblock %}
 
 {% block body %}
-    <h1>Game index</h1>
+    <h1>Listes des matches</h1>
 
     <table class="table" id="gameTable">
         <thead class="thead-light">
@@ -33,13 +33,13 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7">No records found</td>
+                    <td colspan="7">Pas de matches/td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_game_new') }}" class="btn btn-success">Create new</a>
+    <a href="{{ path('app_game_new') }}" class="btn btn-success">Créér matches</a>
 
   
 {% endblock %}
