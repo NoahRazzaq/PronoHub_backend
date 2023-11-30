@@ -1,64 +1,82 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Game{% endblock %}
+{% block title %}Jeu{% endblock %}
 
 {% block body %}
-    <h1>Game</h1>
+    <div class="container mt-5">
+        <div>
+            {% if game.isFinished %}
+                <button class="btn btn-success mt-4">Match Terminé</button>
+            {% else %}
+                <button class="btn btn-danger mt-4">A venir</button>
+            {% endif %}
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ game.id }}</td>
-            </tr>
-            <tr>
-                <th>Score1</th>
-                <td>{{ game.score1 }}</td>
-            </tr>
-            <tr>
-                <th>Score2</th>
-                <td>{{ game.score2 }}</td>
-            </tr>
-            <tr>
-                <th>Banner</th>
-                <td>{{ game.banner }}</td>
-            </tr>
-            <tr>
-                <th>DateMatch</th>
-                <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">Id</th>
+                        <td>{{ game.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Résultat</th>
+                        <td>
+                            {{ game.teamId1.name }} {{ game.score1 }} - {{ game.score2 }} {{ game.teamId2.name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Bannière</th>
+                        <td>
+                            <img src="{{ game.banner }}" alt="" class="img-fluid" style="max-width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">DateMatch</th>
+                        <td>{{ game.dateMatch ? game.dateMatch|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <h2>Bets:</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Status</th>
-                <th>Users</th>
-                <th>Team</th>
-                <!-- Add more columns based on your Bet entity properties -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for bet in bets %}
-        
-                <tr>
-                    <td>{{ bet.id }}</td>
-                    <td>{{ bet.status }}</td>
-                    <td>
-                        
-                    </td>
-                    <td>{{ bet.getTeam().name }}</td>
-                    <!-- Add more cells based on your Bet entity properties -->
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <h2 class="mt-4">Paris :</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Statut</th>
+                        <th scope="col">Equipe parier</th>
+                        <th scope="col">Nom utilisateur</th>
+                        <th scope="col">Valider paris</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bet in bets %}
+                        <tr>
+                            <td>{{ bet.id }}</td>
+                            <td>{{ bet.status }}</td>
+                            <td>{{ bet.team.name }}</td>
+                            <td>
+                                {% for user in bet.users %}
+                                    {{ user.name }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_game_update_bet_status', {'id': game.id, 'betId': bet.id, 'status': 'valid'}) }}"
+                                    class="btn btn-success">Valider</a>
+                                <a href="{{ path('app_game_update_bet_status', {'id': game.id, 'betId': bet.id, 'status': 'pending'}) }}"
+                                    class="btn btn-warning">En attente</a>
+                                <a href="{{ path('app_game_update_bet_status', {'id': game.id, 'betId': bet.id, 'status': 'finished'}) }}"
+                                    class="btn btn-danger">Terminé</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_game_index') }}">back to list</a>
-
-
-    {{ include('game/_delete_form.html.twig') }}
+        <a href="{{ path('app_game_index') }}" class="btn btn-primary mt-4">Retour à la liste</a>
+        {{ include('game/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Game;
 use App\Entity\LeagueApi;
 use App\Form\LeagueApiType;
 use App\Repository\GameRepository;
 use App\Repository\LeagueApiRepository;
+use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use GMP;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,9 +30,10 @@ class LeagueApiController extends AbstractController
 
 
     #[Route('/{id}', name: 'app_league_api_show', methods: ['GET'])]
-    public function show(LeagueApi $leagueApi, GameRepository $gameRepository): Response
+    public function show(LeagueApi $leagueApi, GameRepository $gameRepository, TeamRepository $teamRepository): Response
     {
         $rounds = $gameRepository->findRoundsByLeague($leagueApi);
+        
 
         return $this->render('league_api/show.html.twig', [
             'league_api' => $leagueApi,
@@ -53,41 +56,55 @@ class LeagueApiController extends AbstractController
     }
 
     #[Route('/{leagueId}/round/{roundId}/update-scores', name: 'app_league_api_update_scores', methods: ['GET'])]
-    public function updateScores(
-        Request $request,
-        int $leagueId,
-        int $roundId,
-        HttpClientInterface $httpClient,
-        GameRepository $gameRepository,
-        EntityManagerInterface $manager,
-        LeagueApiRepository $leagueApiRepository
-    ): Response {
+public function updateScores(
+    Request $request,
+    int $leagueId,
+    int $roundId,
+    HttpClientInterface $httpClient,
+    GameRepository $gameRepository,
+    EntityManagerInterface $manager,
+    LeagueApiRepository $leagueApiRepository
+): Response {
+    $seasonYear = '2023-2024';
+    $league = $leagueApiRepository->find($leagueId);
+    $leagueAPIid = $league->getIdentifier();
+    $apiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/eventsround.php?id={$leagueAPIid}&r={$roundId}&s={$seasonYear}";
+    $response = $httpClient->request('GET', $apiEndpoint);
+    $data = $response->toArray();
 
+    $games = $gameRepository->findGamesByLeagueAndRound($leagueId, $roundId);
 
-        $seasonYear = '2023-2024';
-        $league = $leagueApiRepository->find($leagueId);
-        $leagueAPIid = $league->getIdentifier();
-        $apiEndpoint = "https://www.thesportsdb.com/api/v1/json/3/eventsround.php?id={$leagueAPIid}&r={$roundId}&s={$seasonYear}";
-        $response = $httpClient->request('GET', $apiEndpoint);
-        $data = $response->toArray();
+    foreach ($games as $game) {
+        $matchingEvent = $this->findMatchingEvent($game, $data['events']);
 
-
-        $games = $gameRepository->findGamesByLeagueAndRound($leagueId, $roundId);
-
-        foreach ($games as $game) {
-            foreach ($data['events'] as $event) {
-                $game->setScore1($event['intHomeScore']);
-                $game->setScore2($event['intAwayScore']);
-                $game->setIsFinished($event['strStatus'] === 'Match Finished');
-            }
+        if ($matchingEvent) {
+            $game->setScore1($matchingEvent['intHomeScore']);
+            $game->setScore2($matchingEvent['intAwayScore']);
+            $game->setIsFinished($matchingEvent['strStatus'] === 'Match Finished');
 
             $manager->persist($game);
         }
-
-        $manager->flush();
-
-        return $this->redirectToRoute('app_home');
     }
+
+    $manager->flush();
+
+    return $this->redirectToRoute('app_home');
+}
+
+    public function findMatchingEvent(Game $game, array $events): ?array
+{
+    $team1Name = $game->getTeamId1()->getName();
+    $team2Name = $game->getTeamId2()->getName();
+
+    foreach ($events as $event) {
+        if ($event['strHomeTeam'] === $team1Name && $event['strAwayTeam'] === $team2Name) {
+            return $event;
+        }
+    }
+
+    return null; 
+}
+
 
 
     #[Route('/{id}', name: 'app_league_api_delete', methods: ['POST'])]

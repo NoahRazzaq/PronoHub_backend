@@ -29,15 +29,13 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 12; $i++) {
             $teams1 = new Team();
             $teams1->setName($faker->name)
-                ->setLogo($faker->text)
-                ->setType($faker->word);
+                ->setLogo($faker->text);
 
             $manager->persist($teams1);
 
             $teams2 = new Team();
             $teams2->setName($faker->name)
-                ->setLogo($faker->text)
-                ->setType($faker->word);
+                ->setLogo($faker->text);
 
             $manager->persist($teams2);
 
@@ -52,8 +50,7 @@ class AppFixtures extends Fixture
                 ->setBanner($faker->text)
                 ->setDateMatch($faker->dateTime())
                 ->setTeamId1($teams1)
-                ->setTeamId2($teams2)
-                ->setType($faker->word);
+                ->setTeamId2($teams2);
 
             $manager->persist($games);
         }

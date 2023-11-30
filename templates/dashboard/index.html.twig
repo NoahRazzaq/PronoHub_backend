@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <nav id="sidebar" class="col-md-3">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                Tableau de bord
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Prochains matches
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_league_api_index') }}">
+                                Championnats
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-9">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Bienvenue sur le Tableau de bord de Pronohub</h1>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Informations utilisateur</h5>
+                        <p class="card-text">Vous êtes connecté en tant qu'admin.</p>
+                        <p class="card-text">Role: {{ app.user.roles | join(', ') }}</p>
+                    </div>
+                </div>
+
+                {% if upcomingMatches is not empty %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Prochains matches</h5>
+            <ul>
+                {% for game in upcomingMatches %}
+                    <li>
+                        <a href="{{ path('app_game_show', {'id': game.id}) }}">
+                            <img src="{{ game.banner }}" alt="">
+                            {{ game.dateMatch|date('Y-m-d H:i') }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% else %}
+    <p>Aucun match à venir pour le moment.</p>
+{% endif %}
+
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Championnats</h5>
+                        <ul>
+                          
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}

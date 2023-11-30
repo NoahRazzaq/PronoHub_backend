@@ -1,14 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Game{% endblock %}
+{% block title %}Nouveau Jeu{% endblock %}
 
 {% block body %}
-    <h1>Create Matches</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">Créer des Matchs</h1>
 
-    {{ form_start(form) }}
-    {{ form_row(form.leagueId) }}
-    {{ form_row(form.round) }}
-    {{ form_row(form.seasonYear) }}
-    {{ form_row(form.submit) }}
-    {{ form_end(form) }}
+                {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.leagueId, 'Nom de la Ligue') }}
+                    {{ form_widget(form.leagueId, {'attr': {'class': 'form-control', 'placeholder': 'Entrer l\'ID de la Ligue'}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.leagueId) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.round, 'Tour') }}
+                    {{ form_widget(form.round, {'attr': {'class': 'form-control', 'placeholder': 'Entrer le Tour'}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.round) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.seasonYear, 'Année de la Saison') }}
+                    {{ form_widget(form.seasonYear, {'attr': {'class': 'form-control', 'placeholder': 'Entrer l\'Année de la Saison'}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.seasonYear) }}
+                    </div>
+                </div>
+
+                {{ form_row(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

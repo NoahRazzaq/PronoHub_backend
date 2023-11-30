@@ -29,10 +29,9 @@ class TeamGameFormType extends AbstractType
         ->add('seasonYear', ChoiceType::class, [
             'label' => 'Season Year',
             'choices' => $this->getYearChoices(),
-            'required' => true,
         ])
         ->add('submit', SubmitType::class, [
-            'label' => 'Create Matches',
+            'label' => 'Créer matches',
         ]);
     }
 

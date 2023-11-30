@@ -1,41 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Team{% endblock %}
+{% block title %}Équipe{% endblock %}
 
 {% block body %}
-    <h1>Team</h1>
+    <div class="container mt-5">
+        <h1 class="text-center">Détails de l'Équipe</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ team.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ team.name }}</td>
-            </tr>
-            <tr>
-                <th>Logo</th>
-                <td>{{ team.logo }}</td>
-            </tr>
-            <tr>
-               
-            </tr>
-        </tbody>
-    </table>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th scope="row">Identifiant</th>
+                    <td>{{ team.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Nom</th>
+                    <td>{{ team.name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Logo</th>
+                    <td>
+                        {% if team.logo %}
+                            <img src="{{ team.logo }}" alt="{{ team.name }} Logo" class="img-fluid" style="max-width: 100px;">
+                        {% else %}
+                            Aucun logo disponible
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    {% for game in team.games %}
-            <li>{{ game.banner }} - {{ game.dateMatch|date('Y-m-d H:i') }}</li>
-            <li> Score: {{ game.score1 }} - {{ game.score2 }}</li>
-        {% endfor %}
+        <h2 class="mt-4">Matchs de l'Équipe :</h2>
+        <div class="list-group">
+            {% for game in team.games %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        {% if game.banner %}
+                            <img src="{{ game.banner }}" alt="{{ game.banner }}" class="img-fluid" style="max-width: 100px;">
+                        {% endif %}
+                        <div class="ml-3">
+                            {% if game.isFinished %}
+                                <span class="text-success">Match Terminé</span>
+                            {% else %}
+                                <span class="text-danger">À venir</span>
+                            {% endif %}
+                            <br>
+                            Score : {{ game.score1 }} - {{ game.score2 }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-  
-
-
-    <a href="{{ path('app_team_index') }}">back to list</a>
-
-    <a href="{{ path('app_team_edit', {'id': team.id}) }}">edit</a>
-
-    {{ include('team/_delete_form.html.twig') }}
+        <div class="mt-4">
+            <a href="{{ path('app_team_index') }}" class="btn btn-primary">Retour à la liste</a>
+            {{ include('team/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}
